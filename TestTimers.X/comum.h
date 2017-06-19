@@ -38,7 +38,8 @@ typedef enum {
     timerNotTimeout ///< Temporizador não atingiu o tempo programado
 } timerFuncReturn;
 
-sSystemTimers_t sSystemTimers; //Temporizadores do firmware com resolução de 1 ms
+
+volatile sSystemTimers_t sSystemTimers; //Temporizadores do firmware com resolução de 1 ms
 
 void timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
 timerFuncReturn timerIsTimeout(const sTimer_t timerStruct);

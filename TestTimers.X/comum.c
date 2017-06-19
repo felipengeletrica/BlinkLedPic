@@ -44,7 +44,7 @@ void timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *
 
 static uint16_t timerValue(const sTimer_t timerStruct)
 {
-    uint16_t difTime;
+    int16_t difTime = 0;
 
     if(!timerStruct.timeoutValue)
     {
@@ -63,7 +63,6 @@ timerFuncReturn timerIsTimeout(sTimer_t timerStruct)
     //Verifica atingiu o tempo programado
     if(timerValue(timerStruct)  >= timerStruct.timeoutValue)
     {
-
         return(timerTimeout);
     }
     
@@ -78,26 +77,27 @@ void SystemTimers()
             : sSystemTimers.timer1ms++;
      
     //Incrementar o timer de 10 ms com protecao de overflow
-    if(!(sSystemTimers.timer1ms % 10))
+    if(!(sSystemTimers.timer1ms % 10)){
         sSystemTimers.timer10ms == MAX_VALUE 
                 ? (sSystemTimers.timer10ms = 0) 
                 : sSystemTimers.timer10ms++;
-    
+    }
     //Incrementar o timer de 100 ms com protecao de overflow
-    if(!(sSystemTimers.timer1ms % 100))
+    if(!(sSystemTimers.timer1ms % 100)){
                 sSystemTimers.timer100ms == MAX_VALUE 
                         ? (sSystemTimers.timer100ms = 0) 
                         : sSystemTimers.timer100ms++;
-    
+    }
     //Incrementar o timer de 1 s com protecao de overflow
-    if(!(sSystemTimers.timer1ms % 1000))
+    if(!(sSystemTimers.timer1ms % 1000)){
                 sSystemTimers.timer1s == MAX_VALUE 
                         ? sSystemTimers.timer1s = 0 
                         : sSystemTimers.timer1s++;
-    
+    }
     //Incrementar o timer de 1 minuto com protecao de overflow
-    if(!(sSystemTimers.timer1s % 60))
+    if(!(sSystemTimers.timer1s % 60)){
                 sSystemTimers.timer1min == MAX_VALUE 
                         ? sSystemTimers.timer1min = 0 
                         : sSystemTimers.timer1min++;
+    }
 }

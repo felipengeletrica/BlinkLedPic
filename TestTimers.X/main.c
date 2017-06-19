@@ -117,17 +117,18 @@ void InitMCU()
 void  ledStatus()
 {
     static sTimer_t  timerLedStatus;
+    static char flgLED = FALSE;
     //Verifica de timer já foi inicializado
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 1 seconds 
-        timerInit(&timerLedStatus, 5, &sSystemTimers.timer100ms);
+        timerInit(&timerLedStatus, 10, &sSystemTimers.timer100ms);
         LED_GREEN =~ LED_GREEN;
         
-        if(LED_GREEN)
-            putsUsart((char *)"\n\rLED ON");
-        else
-            putsUsart((char *)"\n\rLED OFF");
-        
+//        if(LED_GREEN)
+//            putsUsart((char *)"\n\rLED ON");
+//        else
+//            putsUsart((char *)"\n\rLED OFF");
+//        
     }
     else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
         

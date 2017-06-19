@@ -27,7 +27,6 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>README.md.txt</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../Projetos/Nanoamperimetro/Firmware</Elem>
