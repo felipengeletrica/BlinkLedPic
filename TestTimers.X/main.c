@@ -114,17 +114,16 @@ void InitMCU()
     
     //Serial port
     initUsart();
-    //Inicialização do timer0
+    //Init interrupts timer
     InitTimer();
 }
 
 void  ledStatus()
 {
     static sTimer_t  timerLedStatus;
-
-    //Verifica de timer já foi inicializado
+    //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
-        //Init timer 1 seconds 
+        //Init timer 3 seconds 
         timerInit(&timerLedStatus, 3, &sSystemTimers.timer1s);
         LED_GREEN =~ LED_GREEN;  
         if(LED_GREEN)
@@ -143,9 +142,9 @@ void  ledStatus1()
 {
     static sTimer_t  timerLedStatus;
 
-    //Verifica de timer já foi inicializado
+    //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
-        //Init timer 1 seconds 
+        //Init timer 2 seconds 
         timerInit(&timerLedStatus, 2, &sSystemTimers.timer1s);
         LED_RED =~ LED_RED;  
         if(LED_RED)
@@ -162,8 +161,7 @@ void  ledStatus1()
 void  ledStatus2()
 {
     static sTimer_t  timerLedStatus;
-
-    //Verifica de timer já foi inicializado
+    //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 1 seconds 
         timerInit(&timerLedStatus, 1, &sSystemTimers.timer1s);
@@ -184,11 +182,10 @@ void  ledStatus2()
 void  relay()
 {
     static sTimer_t  timerRelay;
-    static flgRelay = FALSE;
-
-    //Verifica de timer já foi inicializado
+   
+    //Check timer status
     if(timerRelay.flgInitTimer == FALSE){
-        //Init timer 1 seconds 
+        //Init timer 1 minute 
         timerInit(&timerRelay, 1, &sSystemTimers.timer1min);
         RELAY =~ RELAY;
         if(RELAY)
