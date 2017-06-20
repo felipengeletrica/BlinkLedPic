@@ -22,6 +22,7 @@ typedef struct {
     uint16_t timer100ms;       ///< Timer 100 ms
     uint16_t timer1s;          ///< Timer 1 s
     uint16_t timer1min;        ///< Timer 1 min
+    uint16_t timer1hour;       ///<timer  1 hour
 } sSystemTimers_t;
 
 ///Estrutura de um temporizador do firmware
@@ -39,9 +40,9 @@ typedef enum {
 } timerFuncReturn;
 
 
-volatile sSystemTimers_t sSystemTimers; //Temporizadores do firmware com resolução de 1 ms
+sSystemTimers_t sSystemTimers = {0, 0, 0, 0 ,0}; //Temporizadores do firmware com resolução de 1 ms
 
-void timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
+int timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
 timerFuncReturn timerIsTimeout(const sTimer_t timerStruct);
 void SystemTimers(void);
 #endif	/* _COMUM_H */

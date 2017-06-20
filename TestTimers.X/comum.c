@@ -31,14 +31,22 @@ either expressed or implied, of the FreeBSD Project.
 #include "comum.h"
 
 
-void timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
+int timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
 {
-    ptrTimer->timeoutValue = timeoutValue;
-    //Indica que o timer foi inicializado
-    ptrTimer->flgInitTimer = (timeoutValue >= MAX_VALUE) ? FALSE : TRUE;
-    ptrTimer->ptrSystemTimerValue = (uint16_t *) ptrSystemTimerValue;
-    //Inicia a temporização
-    ptrTimer->startTime = *(ptrTimer->ptrSystemTimerValue);
+    int8_t ret = FALSE;
+    
+    if(timeoutValue < MAX_VALUE){
+
+        ptrTimer->timeoutValue = timeoutValue;
+        //Indicates that the timer is init
+        ptrTimer->flgInitTimer =  TRUE;
+        ptrTimer->ptrSystemTimerValue = (uint16_t *) ptrSystemTimerValue;
+        //Start the timer copy timestamp
+        ptrTimer->startTime = *(ptrTimer->ptrSystemTimerValue);
+        ret = TRUE;
+    }
+    
+    return ret;
 }
 
 
@@ -60,7 +68,7 @@ static uint16_t timerValue(const sTimer_t timerStruct)
 
 timerFuncReturn timerIsTimeout(sTimer_t timerStruct)
 {
-    //Verifica atingiu o tempo programado
+    //It reached the programd time
     if(timerValue(timerStruct)  >= timerStruct.timeoutValue)
     {
         return(timerTimeout);
@@ -71,33 +79,39 @@ timerFuncReturn timerIsTimeout(sTimer_t timerStruct)
 
 void SystemTimers()
 {  
-    //Verifica e incrementa os valores do timer de referência de 1 ms
+    //Checks and increases the values of the timer from 1 ms
     sSystemTimers.timer1ms == MAX_VALUE 
             ? (sSystemTimers.timer1ms = 0) 
             : sSystemTimers.timer1ms++;
-     
-    //Incrementar o timer de 10 ms com protecao de overflow
+    
+    //Increase the timer of 10 ms with protection from overflow
     if(!(sSystemTimers.timer1ms % 10)){
         sSystemTimers.timer10ms == MAX_VALUE 
                 ? (sSystemTimers.timer10ms = 0) 
                 : sSystemTimers.timer10ms++;
     }
-    //Incrementar o timer de 100 ms com protecao de overflow
+    //Increase the timer of 100 ms with protection from overflow
     if(!(sSystemTimers.timer1ms % 100)){
                 sSystemTimers.timer100ms == MAX_VALUE 
                         ? (sSystemTimers.timer100ms = 0) 
                         : sSystemTimers.timer100ms++;
     }
-    //Incrementar o timer de 1 s com protecao de overflow
+    //Increase the timer of 1s with protection from overflow
     if(!(sSystemTimers.timer1ms % 1000)){
                 sSystemTimers.timer1s == MAX_VALUE 
                         ? sSystemTimers.timer1s = 0 
                         : sSystemTimers.timer1s++;
     }
-    //Incrementar o timer de 1 minuto com protecao de overflow
-    if(!(sSystemTimers.timer1s % 60)){
+    //Increase the timer of 1 min with protection from overflow
+    if(!(sSystemTimers.timer1ms % 1000) && !(sSystemTimers.timer1s % 60)){
                 sSystemTimers.timer1min == MAX_VALUE 
                         ? sSystemTimers.timer1min = 0 
                         : sSystemTimers.timer1min++;
+    }
+    //Increase the timer of one hour with protection from overflow
+    if(!(sSystemTimers.timer1s % 60) && !(sSystemTimers.timer1min % 60) ){
+                sSystemTimers.timer1hour == MAX_VALUE 
+                        ? sSystemTimers.timer1hour = 0 
+                        : sSystemTimers.timer1hour++;
     }
 }
