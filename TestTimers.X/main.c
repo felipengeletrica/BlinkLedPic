@@ -91,9 +91,10 @@ either expressed or implied, of the FreeBSD Project.
 #pragma config EBTRB    = OFF
 
 //DEFINES
-#define LED_GREEN PORTBbits.RB5
-#define RELAY     PORTBbits.LATB4
-#define BOTAO_1   PORTBbits.RB3
+#define LED_GREEN   LATBbits.LATB5
+#define LED_RED     LATBbits.LATB4
+#define LED_GREEN2  LATBbits.LATB3
+#define RELAY       LATBbits.LATB2
 
 // Init MCU
 void InitMCU()
@@ -105,8 +106,11 @@ void InitMCU()
     TRISBbits.TRISB4 = 0;
     PORTBbits.RB4 = 0;
     
-    TRISBbits.TRISB3 = 1;
     TRISBbits.TRISB3 = 0;
+    PORTBbits.RB3 = 0;
+    
+    TRISBbits.TRISB2 = 0;
+    PORTBbits.RB2 = 0;
     
     //Serial port
     initUsart();
@@ -117,22 +121,85 @@ void InitMCU()
 void  ledStatus()
 {
     static sTimer_t  timerLedStatus;
-    static char flgLED = FALSE;
+
     //Verifica de timer já foi inicializado
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 1 seconds 
-        timerInit(&timerLedStatus, 10, &sSystemTimers.timer100ms);
-        LED_GREEN =~ LED_GREEN;
+        timerInit(&timerLedStatus, 3, &sSystemTimers.timer1s);
+        LED_GREEN =~ LED_GREEN;  
+        if(LED_GREEN)
+            putsUsart((char *)"\n\rLED GREEN ON");
+        else
+            putsUsart((char *)"\n\rLED GRENN OFF");
         
-//        if(LED_GREEN)
-//            putsUsart((char *)"\n\rLED ON");
-//        else
-//            putsUsart((char *)"\n\rLED OFF");
-//        
     }
     else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
         
         timerLedStatus.flgInitTimer = FALSE;
+    }
+}
+
+void  ledStatus1()
+{
+    static sTimer_t  timerLedStatus;
+
+    //Verifica de timer já foi inicializado
+    if(timerLedStatus.flgInitTimer == FALSE){
+        //Init timer 1 seconds 
+        timerInit(&timerLedStatus, 2, &sSystemTimers.timer1s);
+        LED_RED =~ LED_RED;  
+        if(LED_RED)
+            putsUsart((char *)"\n\rLED RED ON");
+        else
+            putsUsart((char *)"\n\rLED RED OFF");//        
+    }
+    else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
+        
+        timerLedStatus.flgInitTimer = FALSE;
+    }
+}
+
+void  ledStatus2()
+{
+    static sTimer_t  timerLedStatus;
+
+    //Verifica de timer já foi inicializado
+    if(timerLedStatus.flgInitTimer == FALSE){
+        //Init timer 1 seconds 
+        timerInit(&timerLedStatus, 1, &sSystemTimers.timer1s);
+        LED_GREEN2 =~ LED_GREEN2;  
+        if(LED_GREEN2)
+            putsUsart((char *)"\n\rLED GREEN2 ON");
+        else
+            putsUsart((char *)"\n\rLED GREEN2 OFF");
+        
+    }
+    else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
+        
+        timerLedStatus.flgInitTimer = FALSE;
+    }
+}
+
+
+void  relay()
+{
+    static sTimer_t  timerRelay;
+    static flgRelay = FALSE;
+
+    //Verifica de timer já foi inicializado
+    if(timerRelay.flgInitTimer == FALSE){
+        //Init timer 1 seconds 
+        timerInit(&timerRelay, 1, &sSystemTimers.timer1min);
+        RELAY =~ RELAY;
+        if(RELAY)
+            putsUsart((char *)"\n\rRELAY ON");
+        else
+            putsUsart((char *)"\n\rRELAY OFF");
+        
+    }
+    else if(timerIsTimeout(timerRelay) == timerTimeout){      
+        
+        timerRelay.flgInitTimer = FALSE;
     }
 }
 
@@ -159,6 +226,9 @@ void main(void)
     {
         //Task blink status led
         ledStatus();
+        ledStatus1();
+        ledStatus2();
+        relay();
         //Task Send serial keep alive baud 115200
         KeepAlive();
     }
