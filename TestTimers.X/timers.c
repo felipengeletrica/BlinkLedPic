@@ -27,9 +27,8 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 
 /********************************************* INCLUDES *******************************************************/
-
-
 #include "timers.h"
+
 
 //Initializes the timer with the timer value and global resolution
 int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
@@ -69,11 +68,10 @@ static uint16_t timerValue(const StructTimer timerStruct)
 }
 
 //Check for timeout
-timerReturn CheckTimeout(StructTimer timerStruct)
+int CheckTimeout(StructTimer timerStruct)
 {
     //It reached the programd time
-    return(timerValue(timerStruct)  >= timerStruct.timeoutValue) 
-            ? isTimeout : NotTimeout;
+    return(timerValue(timerStruct)  >= timerStruct.timeoutValue) ? TRUE : FALSE;
 }
 
 void SystemTimers()
@@ -108,8 +106,7 @@ void SystemTimers()
                         : sSystemTimers.timer1min++;
     }
     //Increase the timer of one hour with protection from overflow
-    if(sSystemTimers.timer1min)
-    if(!(sSystemTimers.timer1ms % 1000) && !(sSystemTimers.timer1min % 60) ){
+    if(!(sSystemTimers.timer1ms % 60000) && !(sSystemTimers.timer1min % 60) ){
                 sSystemTimers.timer1hour == MAX_VALUE 
                         ? sSystemTimers.timer1hour = 0 
                         : sSystemTimers.timer1hour++;
