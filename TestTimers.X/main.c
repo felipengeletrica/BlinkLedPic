@@ -36,8 +36,6 @@ either expressed or implied, of the FreeBSD Project.
 #include <stddef.h>
 #include <ctype.h>
 #include <assert.h>
-
-
 #include "xlcd.h"
 #include "usart.h"
 #include "Interrupt.h"
@@ -127,7 +125,7 @@ void  ledStatus()
         LED_GREEN =~ LED_GREEN;  
         putsUsart((char *)(LED_GREEN == ON ? "\n\rLED GREEN ON" : "\n\rLED GRENN OFF"));
     }
-    else if(CheckTimeout(timerLedStatus) == isTimeout){      
+    else if(CheckTimeout(timerLedStatus) == TRUE){      
         
         timerLedStatus.flgInitTimer = FALSE;
     }
@@ -144,7 +142,7 @@ void  ledStatus1()
         LED_RED =~ LED_RED;  
         putsUsart((char *)(LED_RED == ON ? "\n\rLED RED ON" : "\n\rLED RED OFF"));    
     }
-    else if(CheckTimeout(timerLedStatus) == isTimeout){      
+    else if(CheckTimeout(timerLedStatus) == TRUE){      
         
         timerLedStatus.flgInitTimer = FALSE;
     }
@@ -160,7 +158,7 @@ void  ledStatus2()
         LED_GREEN2 =~ LED_GREEN2;
         putsUsart((char *)(LED_GREEN2 == ON ? "\n\rLED GREEN2 ON" : "\n\rLED GREEN2 OFF"));    
     }
-    else if(CheckTimeout(timerLedStatus) == isTimeout){      
+    else if(CheckTimeout(timerLedStatus) == TRUE){      
         timerLedStatus.flgInitTimer = FALSE;
     }
 }
@@ -175,7 +173,7 @@ void  relay()
         RELAY =~ RELAY;
         putsUsart((char *)(RELAY == ON ? "\n\rRELAY ON" : "\n\rRELAY OFF"));    
     }
-    else if(CheckTimeout(timerRelay) == isTimeout){      
+    else if(CheckTimeout(timerRelay) == TRUE){      
         
         timerRelay.flgInitTimer = FALSE;
     }
@@ -190,7 +188,7 @@ void  KeepAlive()
         timerInit(&timerKeepAlive, 10, &sSystemTimers.timer1s);
         putsUsart((char *)"\n\rKeep Alive ...");
     }
-    else if(CheckTimeout(timerKeepAlive) == isTimeout){      
+    else if(CheckTimeout(timerKeepAlive) == TRUE){      
         timerKeepAlive.flgInitTimer = FALSE;
     }
 }
