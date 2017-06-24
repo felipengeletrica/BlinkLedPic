@@ -28,17 +28,18 @@ either expressed or implied, of the FreeBSD Project.
 
 /********************************************* INCLUDES *******************************************************/
 
-#include "comum.h"
 
+#include "timers.h"
 
-int timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
+//Initializes the timer with the timer value and global resolution
+int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
 {
     int8_t ret = FALSE;
     
     if(timeoutValue < MAX_VALUE){
 
         ptrTimer->timeoutValue = timeoutValue;
-        //Indicates that the timer is init
+        //Indicates that the timer has started
         ptrTimer->flgInitTimer =  TRUE;
         ptrTimer->ptrSystemTimerValue = (uint16_t *) ptrSystemTimerValue;
         //Start the timer copy timestamp
@@ -49,10 +50,11 @@ int timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *p
     return ret;
 }
 
-
-static uint16_t timerValue(const sTimer_t timerStruct)
+//Checks if the timer has already passed with timer overflow correction 
+//by calculating the difference
+static uint16_t timerValue(const StructTimer timerStruct)
 {
-    int16_t difTime = 0;
+    typedef_timers difTime = 0;
 
     if(!timerStruct.timeoutValue)
     {
@@ -66,15 +68,12 @@ static uint16_t timerValue(const sTimer_t timerStruct)
 	return(difTime);
 }
 
-timerFuncReturn timerIsTimeout(sTimer_t timerStruct)
+//Check for timeout
+timerReturn CheckTimeout(StructTimer timerStruct)
 {
     //It reached the programd time
-    if(timerValue(timerStruct)  >= timerStruct.timeoutValue)
-    {
-        return(timerTimeout);
-    }
-    
-    return(timerNotTimeout);
+    return(timerValue(timerStruct)  >= timerStruct.timeoutValue) 
+            ? isTimeout : NotTimeout;
 }
 
 void SystemTimers()
@@ -109,7 +108,8 @@ void SystemTimers()
                         : sSystemTimers.timer1min++;
     }
     //Increase the timer of one hour with protection from overflow
-    if(!(sSystemTimers.timer1s % 60) && !(sSystemTimers.timer1min % 60) ){
+    if(sSystemTimers.timer1min)
+    if(!(sSystemTimers.timer1ms % 1000) && !(sSystemTimers.timer1min % 60) ){
                 sSystemTimers.timer1hour == MAX_VALUE 
                         ? sSystemTimers.timer1hour = 0 
                         : sSystemTimers.timer1hour++;
