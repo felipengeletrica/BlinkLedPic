@@ -9,40 +9,43 @@
 #include <stdint.h>
 #include <assert.h>
 
-#define TRUE   1 //Tipo de dado
-#define FALSE  0 //Tipo de dado
+//Controls
+#define TRUE   1 //Data type
+#define FALSE  0 //Data type
 
-#define MAX_VALUE  UINT16_MAX  //Maximo valor de contagem dos timers
+//Defines length circular buffers depends processados words 
+#define MAX_VALUE       UINT16_MAX  //Maximum value
+#define typedef_timers  uint16_t    //Depends Maximum value
 
 
-//Estrutura dos temporizadores do sistema
+//Struct circular timers resolutions 
 typedef struct {
-    uint16_t timer1ms;         ///< Timer 1 ms
-    uint16_t timer10ms;        ///< Timer 10 ms
-    uint16_t timer100ms;       ///< Timer 100 ms
-    uint16_t timer1s;          ///< Timer 1 s
-    uint16_t timer1min;        ///< Timer 1 min
-    uint16_t timer1hour;       ///<timer  1 hour
-} sSystemTimers_t;
+    typedef_timers timer1ms;         ///< Timer 1 ms
+    typedef_timers timer10ms;        ///< Timer 10 ms
+    typedef_timers timer100ms;       ///< Timer 100 ms
+    typedef_timers timer1s;          ///< Timer 1 s
+    typedef_timers timer1min;        ///< Timer 1 min
+    typedef_timers timer1hour;       ///<timer  1 hour
+} StructCircTimers;
 
-///Estrutura de um temporizador do firmware
+//Struct to control timers 
 typedef struct {
-    uint16_t     startTime;    ///< timestamo de valor inicial
-    uint16_t     timeoutValue; ///< Valor para ocorrer o timeout do temporizador
-    uint8_t      flgInitTimer; ///< flag de timer inicializado
-    uint16_t*    ptrSystemTimerValue; ///< Ponteiro para o timer do sistema
-} sTimer_t;
+    typedef_timers    startTime;            ///< Timestamp initial value
+    typedef_timers    timeoutValue;         ///< Setup time
+    uint8_t           flgInitTimer;         ///< flag init timer is init
+    typedef_timers*   ptrSystemTimerValue;  ///< System timers
+} StructTimer;
 
-//Retorno das funções do timer
+//Comparison of return timers
 typedef enum {
-    timerTimeout,   ///< Temporizador atingiu o tempo programado
-    timerNotTimeout ///< Temporizador não atingiu o tempo programado
-} timerFuncReturn;
+    isTimeout,     ///< Timer has timed out
+    NotTimeout     ///< Timer not timed out
+} timerReturn;
 
 
-sSystemTimers_t sSystemTimers = {0, 0, 0, 0 ,0}; //Temporizadores do firmware com resolução de 1 ms
+StructCircTimers sSystemTimers = {0, 0, 0, 0 ,0}; //Initializer timers
 
-int timerInit(sTimer_t* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
-timerFuncReturn timerIsTimeout(const sTimer_t timerStruct);
+int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
+timerReturn CheckTimeout(const StructTimer timerStruct);
 void SystemTimers(void);
 #endif	/* _COMUM_H */
