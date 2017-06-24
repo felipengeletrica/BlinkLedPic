@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <assert.h>
 
+/******************************************** DEFINES **************************************************/
 //Controls
 #define TRUE   1 //Data type
 #define FALSE  0 //Data type
@@ -17,7 +18,7 @@
 #define MAX_VALUE       UINT16_MAX  //Maximum value
 #define typedef_timers  uint16_t    //Depends Maximum value
 
-
+/********************************************* STRUCTS *******************************************************/
 //Struct circular timers resolutions 
 typedef struct {
     typedef_timers timer1ms;         ///< Timer 1 ms
@@ -36,16 +37,13 @@ typedef struct {
     typedef_timers*   ptrSystemTimerValue;  ///< System timers
 } StructTimer;
 
-//Comparison of return timers
-typedef enum {
-    isTimeout,     ///< Timer has timed out
-    NotTimeout     ///< Timer not timed out
-} timerReturn;
-
-
+/********************************************* VARIABLES  *******************************************************/
 StructCircTimers sSystemTimers = {0, 0, 0, 0 ,0}; //Initializer timers
 
+/********************************************* PROTOTYPES *******************************************************/
+
 int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue);
-timerReturn CheckTimeout(const StructTimer timerStruct);
+int CheckTimeout(const StructTimer timerStruct);
+
 void SystemTimers(void);
 #endif	/* _COMUM_H */
