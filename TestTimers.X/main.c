@@ -119,7 +119,7 @@ void InitMCU()
 
 void  ledStatus()
 {
-    static sTimer_t  timerLedStatus;
+    static StructTimer  timerLedStatus;
     //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 3 seconds 
@@ -127,7 +127,7 @@ void  ledStatus()
         LED_GREEN =~ LED_GREEN;  
         putsUsart((char *)(LED_GREEN == ON ? "\n\rLED GREEN ON" : "\n\rLED GRENN OFF"));
     }
-    else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
+    else if(CheckTimeout(timerLedStatus) == isTimeout){      
         
         timerLedStatus.flgInitTimer = FALSE;
     }
@@ -135,7 +135,7 @@ void  ledStatus()
 
 void  ledStatus1()
 {
-    static sTimer_t  timerLedStatus;
+    static StructTimer  timerLedStatus;
 
     //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
@@ -144,7 +144,7 @@ void  ledStatus1()
         LED_RED =~ LED_RED;  
         putsUsart((char *)(LED_RED == ON ? "\n\rLED RED ON" : "\n\rLED RED OFF"));    
     }
-    else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
+    else if(CheckTimeout(timerLedStatus) == isTimeout){      
         
         timerLedStatus.flgInitTimer = FALSE;
     }
@@ -152,7 +152,7 @@ void  ledStatus1()
 
 void  ledStatus2()
 {
-    static sTimer_t  timerLedStatus;
+    static StructTimer  timerLedStatus;
     //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 1 seconds 
@@ -160,14 +160,14 @@ void  ledStatus2()
         LED_GREEN2 =~ LED_GREEN2;
         putsUsart((char *)(LED_GREEN2 == ON ? "\n\rLED GREEN2 ON" : "\n\rLED GREEN2 OFF"));    
     }
-    else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
+    else if(CheckTimeout(timerLedStatus) == isTimeout){      
         timerLedStatus.flgInitTimer = FALSE;
     }
 }
 
 void  relay()
 {
-    static sTimer_t  timerRelay;
+    static StructTimer  timerRelay;
     //Check timer status
     if(timerRelay.flgInitTimer == FALSE){
         //Init timer 1 minute 
@@ -175,7 +175,7 @@ void  relay()
         RELAY =~ RELAY;
         putsUsart((char *)(RELAY == ON ? "\n\rRELAY ON" : "\n\rRELAY OFF"));    
     }
-    else if(timerIsTimeout(timerRelay) == timerTimeout){      
+    else if(CheckTimeout(timerRelay) == isTimeout){      
         
         timerRelay.flgInitTimer = FALSE;
     }
@@ -183,14 +183,14 @@ void  relay()
 
 void  KeepAlive()
 {
-    static sTimer_t  timerKeepAlive;
+    static StructTimer  timerKeepAlive;
     //Check timer status
     if(timerKeepAlive.flgInitTimer == FALSE){
         
         timerInit(&timerKeepAlive, 10, &sSystemTimers.timer1s);
         putsUsart((char *)"\n\rKeep Alive ...");
     }
-    else if(timerIsTimeout(timerKeepAlive) == timerTimeout){      
+    else if(CheckTimeout(timerKeepAlive) == isTimeout){      
         timerKeepAlive.flgInitTimer = FALSE;
     }
 }

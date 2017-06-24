@@ -79,7 +79,6 @@ char getUsart(void)
 //
 void putsUsart(char *s)
 {
-
     while (*s)      // loop until *s == '\0', end of string
         putUsart(*s++); //send caracter and point to next one
 }

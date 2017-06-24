@@ -41,7 +41,7 @@ either expressed or implied, of the FreeBSD Project.
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-#include "comum.h"
+#include "timers.h"
 #include "usart.h"
 
 void InitTimer();
