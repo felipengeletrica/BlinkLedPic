@@ -41,7 +41,7 @@ either expressed or implied, of the FreeBSD Project.
 #include "xlcd.h"
 #include "usart.h"
 #include "Interrupt.h"
-#include "comum.h"
+#include "timers.h"
 
 //#include <i2c.h>
 //#include <math.h>
@@ -95,6 +95,8 @@ either expressed or implied, of the FreeBSD Project.
 #define LED_RED     LATBbits.LATB4
 #define LED_GREEN2  LATBbits.LATB3
 #define RELAY       LATBbits.LATB2
+#define ON          1
+#define OFF         0
 
 // Init MCU
 void InitMCU()
@@ -102,13 +104,10 @@ void InitMCU()
     //Ios
     TRISBbits.TRISB5 = 0;
     PORTBbits.RB5 = 0;
-    
     TRISBbits.TRISB4 = 0;
     PORTBbits.RB4 = 0;
-    
     TRISBbits.TRISB3 = 0;
     PORTBbits.RB3 = 0;
-    
     TRISBbits.TRISB2 = 0;
     PORTBbits.RB2 = 0;
     
@@ -126,11 +125,7 @@ void  ledStatus()
         //Init timer 3 seconds 
         timerInit(&timerLedStatus, 3, &sSystemTimers.timer1s);
         LED_GREEN =~ LED_GREEN;  
-        if(LED_GREEN)
-            putsUsart((char *)"\n\rLED GREEN ON");
-        else
-            putsUsart((char *)"\n\rLED GRENN OFF");
-        
+        putsUsart((char *)(LED_GREEN == ON ? "\n\rLED GREEN ON" : "\n\rLED GRENN OFF"));
     }
     else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
         
@@ -145,12 +140,9 @@ void  ledStatus1()
     //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 2 seconds 
-        timerInit(&timerLedStatus, 2, &sSystemTimers.timer1s);
+        timerInit(&timerLedStatus, 20, &sSystemTimers.timer1ms);
         LED_RED =~ LED_RED;  
-        if(LED_RED)
-            putsUsart((char *)"\n\rLED RED ON");
-        else
-            putsUsart((char *)"\n\rLED RED OFF");//        
+        putsUsart((char *)(LED_RED == ON ? "\n\rLED RED ON" : "\n\rLED RED OFF"));    
     }
     else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
         
@@ -164,35 +156,24 @@ void  ledStatus2()
     //Check timer status
     if(timerLedStatus.flgInitTimer == FALSE){
         //Init timer 1 seconds 
-        timerInit(&timerLedStatus, 1, &sSystemTimers.timer1s);
-        LED_GREEN2 =~ LED_GREEN2;  
-        if(LED_GREEN2)
-            putsUsart((char *)"\n\rLED GREEN2 ON");
-        else
-            putsUsart((char *)"\n\rLED GREEN2 OFF");
-        
+        timerInit(&timerLedStatus, 5, &sSystemTimers.timer100ms);
+        LED_GREEN2 =~ LED_GREEN2;
+        putsUsart((char *)(LED_GREEN2 == ON ? "\n\rLED GREEN2 ON" : "\n\rLED GREEN2 OFF"));    
     }
     else if(timerIsTimeout(timerLedStatus) == timerTimeout){      
-        
         timerLedStatus.flgInitTimer = FALSE;
     }
 }
 
-
 void  relay()
 {
     static sTimer_t  timerRelay;
-   
     //Check timer status
     if(timerRelay.flgInitTimer == FALSE){
         //Init timer 1 minute 
-        timerInit(&timerRelay, 1, &sSystemTimers.timer1min);
+        timerInit(&timerRelay, 1, &sSystemTimers.timer1hour);
         RELAY =~ RELAY;
-        if(RELAY)
-            putsUsart((char *)"\n\rRELAY ON");
-        else
-            putsUsart((char *)"\n\rRELAY OFF");
-        
+        putsUsart((char *)(RELAY == ON ? "\n\rRELAY ON" : "\n\rRELAY OFF"));    
     }
     else if(timerIsTimeout(timerRelay) == timerTimeout){      
         
@@ -203,7 +184,7 @@ void  relay()
 void  KeepAlive()
 {
     static sTimer_t  timerKeepAlive;
-    //Verifica de timer já foi inicializado
+    //Check timer status
     if(timerKeepAlive.flgInitTimer == FALSE){
         
         timerInit(&timerKeepAlive, 10, &sSystemTimers.timer1s);
