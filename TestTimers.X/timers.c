@@ -1,5 +1,5 @@
 /********************************************************************
-Copyright (c) 2014-2017, Felipe Vargas <felipeng.eletrica@gmail.com>
+Copyright (c) 2014-2019, Felipe Vargas <felipeng.eletrica@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
-
-/********************************************* INCLUDES *******************************************************/
+********************************************* INCLUDES *******************************************************/
 #include "timers.h"
 
+/********************************************* VARIABLES  *******************************************************/
+StructCircTimers sSystemTimers = {0, 0, 0, 0 ,0};
 
 //Initializes the timer with the timer value and global resolution
-int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
+typedef_timers timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t *ptrSystemTimerValue)
 {
     int8_t ret = FALSE;
-    
+
     if(timeoutValue < MAX_VALUE){
 
         ptrTimer->timeoutValue = timeoutValue;
@@ -45,13 +46,13 @@ int timerInit(StructTimer* ptrTimer, const uint16_t timeoutValue, const uint16_t
         ptrTimer->startTime = *(ptrTimer->ptrSystemTimerValue);
         ret = TRUE;
     }
-    
+
     return ret;
 }
 
-//Checks if the timer has already passed with timer overflow correction 
+//Checks if the timer has already passed with timer overflow correction
 //by calculating the difference
-static uint16_t timerValue(const StructTimer timerStruct)
+typedef_timers timerValue(const StructTimer timerStruct)
 {
     typedef_timers difTime = 0;
 
@@ -62,53 +63,53 @@ static uint16_t timerValue(const StructTimer timerStruct)
 
 	difTime = (*(timerStruct.ptrSystemTimerValue)  < timerStruct.startTime)
 	? (MAX_VALUE - timerStruct.startTime) + *(timerStruct.ptrSystemTimerValue)
-	: *(timerStruct.ptrSystemTimerValue) - timerStruct.startTime; 
-    
+	: *(timerStruct.ptrSystemTimerValue) - timerStruct.startTime;
+
 	return(difTime);
 }
 
 //Check for timeout
-int CheckTimeout(StructTimer timerStruct)
+typedef_timers CheckTimeout(StructTimer timerStruct)
 {
     //It reached the programd time
     return(timerValue(timerStruct)  >= timerStruct.timeoutValue) ? TRUE : FALSE;
 }
 
 void SystemTimers()
-{  
+{
     //Checks and increases the values of the timer from 1 ms
-    sSystemTimers.timer1ms == MAX_VALUE 
-            ? (sSystemTimers.timer1ms = 0) 
+    sSystemTimers.timer1ms == MAX_VALUE
+            ? (sSystemTimers.timer1ms = 0)
             : sSystemTimers.timer1ms++;
-    
+
     //Increase the timer of 10 ms with protection from overflow
     if(!(sSystemTimers.timer1ms % 10)){
-        sSystemTimers.timer10ms == MAX_VALUE 
-                ? (sSystemTimers.timer10ms = 0) 
+        sSystemTimers.timer10ms == MAX_VALUE
+                ? (sSystemTimers.timer10ms = 0)
                 : sSystemTimers.timer10ms++;
     }
     //Increase the timer of 100 ms with protection from overflow
     if(!(sSystemTimers.timer1ms % 100)){
-                sSystemTimers.timer100ms == MAX_VALUE 
-                        ? (sSystemTimers.timer100ms = 0) 
+                sSystemTimers.timer100ms == MAX_VALUE
+                        ? (sSystemTimers.timer100ms = 0)
                         : sSystemTimers.timer100ms++;
     }
     //Increase the timer of 1s with protection from overflow
     if(!(sSystemTimers.timer1ms % 1000)){
-                sSystemTimers.timer1s == MAX_VALUE 
-                        ? sSystemTimers.timer1s = 0 
+                sSystemTimers.timer1s == MAX_VALUE
+                        ? sSystemTimers.timer1s = 0
                         : sSystemTimers.timer1s++;
     }
     //Increase the timer of 1 min with protection from overflow
     if(!(sSystemTimers.timer1ms % 1000) && !(sSystemTimers.timer1s % 60)){
-                sSystemTimers.timer1min == MAX_VALUE 
-                        ? sSystemTimers.timer1min = 0 
+                sSystemTimers.timer1min == MAX_VALUE
+                        ? sSystemTimers.timer1min = 0
                         : sSystemTimers.timer1min++;
     }
     //Increase the timer of one hour with protection from overflow
     if(!(sSystemTimers.timer1ms % 60000) && !(sSystemTimers.timer1min % 60) ){
-                sSystemTimers.timer1hour == MAX_VALUE 
-                        ? sSystemTimers.timer1hour = 0 
+                sSystemTimers.timer1hour == MAX_VALUE
+                        ? sSystemTimers.timer1hour = 0
                         : sSystemTimers.timer1hour++;
     }
 }
