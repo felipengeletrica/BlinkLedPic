@@ -38,7 +38,7 @@ typedef struct {
 } StructTimer;
 
 /********************************************* VARIABLES  *******************************************************/
-StructCircTimers sSystemTimers = {0, 0, 0, 0 ,0}; //Initializer timers
+extern StructCircTimers sSystemTimers;
 
 /********************************************* PROTOTYPES *******************************************************/
 
