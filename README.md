@@ -3,5 +3,14 @@ This program uses MICROCHIP PIC18F4550 microcontroller and has a structure of ti
 
 # This Program:
   Send every 10 seconds (Task) "Keep Alive" through the serial port and flash one LED every 1 second using a flexible timer structure. It can create numerous timers so just declaring a structure so your programs can process several "task"
+  
+  ## Tests
+  ### Blink Led in realitme:
+  ![alt text](https://raw.githubusercontent.com/felipengeletrica/uCscheduling/master/pictures/Board.jpg)
 
-
+  ### Hardware and tests
+  ![alt text](https://raw.githubusercontent.com/felipengeletrica/uCscheduling/master/pictures/BoardAndOsciloscope.jpg)
+  
+  
+  ### Preemptive timers schedules
+  ![alt text](https://raw.githubusercontent.com/felipengeletrica/uCscheduling/master/pictures/Osciloscope.jpg)
