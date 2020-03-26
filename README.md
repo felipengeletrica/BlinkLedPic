@@ -4,6 +4,25 @@ This program uses MICROCHIP PIC18F4550 microcontroller and has a structure of ti
 # This Program:
   Send every 10 seconds (Task) "Keep Alive" through the serial port and flash one LED every 1 second using a flexible timer structure. It can create numerous timers so just declaring a structure so your programs can process several "task"
   
+```cpp
+void main(void)
+{
+    InitMCU();
+    putsUsart((char *)"\n\rSucess init device!!");
+    
+    while(1)
+    {
+        //Task blink status led Timers Tasks
+        ledStatus();
+        ledStatus1();
+        ledStatus2();
+        relay();
+        //Task Send serial keep alive baud 115200
+        KeepAlive();
+    }
+}
+```
+  
   ## Tests
   ### Blink Led in realitme:
   ![alt text](https://raw.githubusercontent.com/felipengeletrica/uCscheduling/master/pictures/Board.jpg)
